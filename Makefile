@@ -71,7 +71,7 @@ $(LIB_PJ)/libpjlib-util-mipsel-24kec-linux-uclibc.a \
 $(LIB_PJ)/libpj-mipsel-24kec-linux-uclibc.a
 
 ifeq ($(PLATFORM), x86)
-DEPEND_LIB = $(DEPEND_LIB_X86)
+DEPEND_LIB = $(DEPEND_LIB_X86) -luuid
 else ifeq ($(PLATFORM), nt966x)
 DEPEND_LIB = $(DEPEND_LIB_NT966X)
 else ifeq ($(PLATFORM), nt966x_d048)
@@ -86,10 +86,15 @@ LIB_CRYPTO = $(FINAL_PATH)/lib/libcrypto.a
 #LIBS= -lcrypto -lpthread -ldl -lm
 LIBS= -lpthread -ldl -lm
 
+DEMO_TARGET = demo-sip
+DEMO_SRCS = sip_client.c sip_register.c main.c
+
+
 all: 
 	$(CC) -shared -fPIC $(SIP_CFLAGS) $(SRCS) -o $(TARGET) $(DEPEND_LIB)
 #	$(CC) -shared -fPIC $(SIP_CFLAGS) $(WEC_LDFLAGS) $(SRCS) -o $(TARGET) $(STATIC_LIB) $(LIBS)
 #	$(STRIP) $(TARGET) 
+	$(CC) $(SIP_CFLAGS) $(DEMO_SRCS) -o $(DEMO_TARGET) $(DEPEND_LIB) $(LIBS)
 
 clean:
 	rm -f *.o 
@@ -99,6 +104,7 @@ clean:
 	rm -f temp
 	rm -f *.img
 	rm -f $(TARGET)	
+	rm -f $(DEMO_TARGET)
 	rm -f *.gdb
 	rm -f *.bak
 
