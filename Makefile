@@ -11,7 +11,20 @@ ifeq ($(DIR_PJSIP), )
 DIR_PJSIP=$(ROOT)/..
 endif
 
-#test:
+all: test sip
+
+ifeq ($(PLATFORM), x86)
+INSTALL_PJ=$(DIR_PJSIP)/final_x86
+else ifeq ($(PLATFORM), nt966x)
+INSTALL_PJ=$(DIR_PJSIP)/final_nt966x
+else ifeq ($(PLATFORM), nt966x_d048)
+INSTALL_PJ=$(DIR_PJSIP)/final_nt966x
+else
+PLATFORM=x86
+INSTALL_PJ=$(DIR_PJSIP)/final_x86
+endif
+
+test:
 	@echo "======$(DIR_PJSIP)"
 	@echo "======WORKDIR: $(WORKDIR) "
 	@echo "======WORKDIR: ${WORKDIR} "
@@ -27,14 +40,6 @@ endif
 	@echo "========GOLBAL_LDFLAGS: $(GOLBAL_LDFLAGS)"
 	@echo "========PLATFORM: $(PLATFORM)"
 	@echo "========CC: $(CC)"
-
-ifeq ($(PLATFORM), x86)
-INSTALL_PJ=$(DIR_PJSIP)/final_x86
-else ifeq ($(PLATFORM), nt966x)
-INSTALL_PJ=$(DIR_PJSIP)/final_nt966x
-else ifeq ($(PLATFORM), nt966x_d048)
-INSTALL_PJ=$(DIR_PJSIP)/final_nt966x
-endif
 
 #INSTALL_PJ=$(DIR_PJSIP)/final_$(PLATFORM)
 
@@ -90,11 +95,12 @@ DEMO_TARGET = demo-sip
 DEMO_SRCS = sip_client.c sip_register.c main.c
 
 
-all: 
+sip:
 	$(CC) -shared -fPIC $(SIP_CFLAGS) $(SRCS) -o $(TARGET) $(DEPEND_LIB)
 #	$(CC) -shared -fPIC $(SIP_CFLAGS) $(WEC_LDFLAGS) $(SRCS) -o $(TARGET) $(STATIC_LIB) $(LIBS)
 #	$(STRIP) $(TARGET) 
 	$(CC) $(SIP_CFLAGS) $(DEMO_SRCS) -o $(DEMO_TARGET) $(DEPEND_LIB) $(LIBS)
+
 
 clean:
 	rm -f *.o 
